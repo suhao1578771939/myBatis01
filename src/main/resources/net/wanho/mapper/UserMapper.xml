@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--命名空间指向对应的接口-->
+<mapper namespace="net.wanho.mapper.UserMapper">
+    <resultMap id="stuMapper" type="User">
+        <result column="id" property="id"/>
+        <result column="username" property="name"/>
+        <result column="password" property="password"/>
+    </resultMap>
+    <!--
+    id 对应接口中的方法名
+    parameterType  参数类型
+    -->
+    <insert id="addUser" parameterType="User">
+        INSERT INTO USER VALUES (NULL ,#{username},#{password})
+    </insert>
+    <insert id="addUserReturnKey" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO USER VALUES (NULL ,#{username},#{password})
+    </insert>
+    <insert id="addUserReturnKey2">
+        <selectKey keyProperty="id" order="AFTER" resultType="int">
+            SELECT last_insert_id()
+        </selectKey>
+        INSERT INTO USER VALUES (NULL ,#{username},#{password})
+    </insert>
+    <update id="updateUser" parameterType="User">
+        UPDATE USER SET username=#{username} where id=#{id}
+    </update>
+    <delete id="deleteUser">
+        DELETE FROM USER WHERE id=#{id}
+    </delete>
+
+    <!--resultType 返回值类型-->
+    <!--SELECT * FROM USER-->
+    <!--  SELECT
+            id,
+            username NAME ,
+            password,
+        FROM
+            USER-->
+    <select id="getAllUser" resultMap="stuMapper">
+        SELECT  id,
+            username,
+            password
+        FROM
+            USER
+    </select>
+    <select id="getUserById" resultType="net.wanho.pojo.User">
+        SELECT * FROM USER WHERE id=#{id}
+    </select>
+    <!--SELECT * FROM USER WHERE username LIKE #{name}-->
+    <!--SELECT * FROM USER WHERE username LIKE "%${value}%"-->
+    <select id="getUserName" resultType="net.wanho.pojo.User" parameterType="string">
+        SELECT * FROM USER WHERE username LIKE #{a}
+    </select>
+    <!-- SELECT * FROM USER WHERE username LIKE #{username}-->
+    <select id="getUserName2" resultType="net.wanho.pojo.User">
+        SELECT * FROM USER WHERE username LIKE concat("%",#{username},"%")
+    </select>
+
+</mapper>
